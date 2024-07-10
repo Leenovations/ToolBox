@@ -7,6 +7,8 @@ LIST = sys.argv[1:]
 
 if len(LIST) % 2 == 0:
 	pass
+elif 'bam' in LIST[0]:
+	pass
 else:
 	raise ValueError("\033[91mThe number of raw data files is odd\033[0m")
 
@@ -75,20 +77,22 @@ with open('SampleSheet.txt', 'w') as note1:
 			Name = data.split('/')[-1]
 			Name = Name.split('.bam')[0]
 			Bam = data
+			Bam = Bam.replace('.bam', '.bwa.bam')
+			Size = os.path.getsize(data)
 
-			command = f'mkdir -p {Name}/03.Align/'
+			command = f'mkdir -p {Name}/03.Output/'
 			os.system(command)
 
-			command = f'mv {Bam} {Name}/03.Align/'
+			command = f'mv {Bam} {Name}/03.Output/'
 			os.system(command)
-			command = f'mv {Bam}.bai {Name}/03.Align/'
+			command = f'mv {Bam}.bai {Name}/03.Output/'
 			os.system(command)
 
-			note1.write(Name + '\t' + Name + '\t' + Name + '\n')
+			note1.write(Name + '\t' + Name + '\t' + Name + '\t' + str(Size) + '\n')
 
 			with open(f'{Name}/SampleSheet.txt', 'w') as note2:
 				Name = data.split('/')[-1]
 				Name = Name.split('.bam')[0]
 				Bam = data
 
-				note2.write(Name + '\t' + Name + '\t' + Name + '\n')
+				note2.write(Name + '\t' + Name + '\t' + Name + '\t' + str(Size) + '\n')
