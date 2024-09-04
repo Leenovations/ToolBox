@@ -93,19 +93,21 @@ dev.off()
 library(ComplexHeatmap)
 library(readxl)
 library(dplyr)
+library(grid)
 
 Annotation <- read.table('/Users/lee/Documents/03.NGS/05.GS/01.BPDCN/02.Table/230825.BPDCN.Involve.Site.txt', 
                          sep = '\t',
                          header=T,
                          row.names = 1)
+
+Annotation <- Annotation %>%
+  select(-Induction, -Contating, -Transplantation)
+
 Annotation <- Annotation[c('BPDCN10', 'BPDCN6', 'BPDCN1', 'BPDCN2', 'BPDCN7', 'BPDCN8', 'BPDCN13', 'BPDCN11', 'BPDCN12', 'BPDCN3', 'BPDCN5', 'BPDCN9', 'BPDCN4'),]
 
 ha = HeatmapAnnotation(Sex = Annotation$Sex,
                        Age = Annotation$Age,
                        "Involvement site" = Annotation$Involvement,
-                       "Induction chemotherapy"=Annotation$Induction,
-                       "L-asparaginase"=Annotation$Contating,
-                       Transplantation=Annotation$Transplantation,
                        Cytogenetics=Annotation$Cytogenetics,
                        Survival=Annotation$Survival,
                        col = list(Sex = c('Male'='#0070C0', 'Female'='firebrick3'),
@@ -113,15 +115,6 @@ ha = HeatmapAnnotation(Sex = Annotation$Sex,
                                   "Involvement site" = c("Multiple skin ± systemic" = "#31869B",
                                                          "Systemic without skin" = "#76933C",
                                                          "Single skin" = "#E26B0A"),
-                                  "Induction chemotherapy" = c('AML-like chemotherapy'='#95B3D7', 
-                                                'ALL-like chemotherapy'='#DA9694', 
-                                                'Lymphoma-like chemotherapy'='#B1A0C7'),
-                                  "L-asparaginase" = c('Yes'='#244062', 
-                                                       'No'='#DCE6F1'),
-                                  Transplantation = c('Allo-SCT'='#9966FF', 
-                                                      'Salvage auto-SCT'='#00CC00', 
-                                                      'Salvage Allo-SCT'='#9966FF',
-                                                      'None'='gray80'),
                                   Cytogenetics = c('Abnormal'='#993300', 
                                                    'Normal'='#CC6633', 
                                                    'Not available'='gray80'),
@@ -150,7 +143,7 @@ col.Onco = c("Missense" = "#008000",
 alter_fun = list(
   background = alter_graphic("rect", fill = "#CCCCCC"),
   Missense = alter_graphic("rect", fill = col.Onco["Missense"]),
-  Truncating = alter_graphic("rect", height = 0.23, fill = col.Onco["Truncating"]),
+  Truncating = alter_graphic("rect", fill = col.Onco["Truncating"]),
   Duplication = alter_graphic("rect", height = 0.23, fill = col.Onco["Duplication"]),
   Deletion = alter_graphic("rect", height = 0.23, fill = col.Onco["Deletion"]),
   Copy_number_Amplification = alter_graphic("rect", height = 0.23, fill = col.Onco["Copy_number_Amplification"]),
@@ -159,8 +152,7 @@ alter_fun = list(
 
 column_title = "Altered in 13 of 13 BPDCN samples"
 heatmap_legend_param = list(title = "Alternations", at = c("Missense", "Truncating", "Duplication", "Deletion", "Copy_number_Amplification","Copy_number_Deletion"), 
-                            labels = c("Missense", "Truncating", "Duplication", "Deletion", "Copy number Amplification","Copy number Deletion"))
-
+                            labels = c("Missense", "Truncating", "Insertion", "Deletion", "Copy number amplification","Copy number deletion"))
 
 Function <- read_excel('/Users/lee/Documents/03.NGS/05.GS/01.BPDCN/02.Table/240129.BPDCN.metascape.xlsx',
                        sheet = 'Oncoplot')
@@ -212,7 +204,7 @@ RAS <- Onco.Data %>%
 Onco.func.Data <- rbind(chromatin_remodeling, Protein_kinase, Cell_Cycle, Methylation, Cell_differentiation, RAS)
 Onco.func.Data <- Onco.func.Data[,c('BPDCN10', 'BPDCN6', 'BPDCN1', 'BPDCN2', 'BPDCN7', 'BPDCN8', 'BPDCN13', 'BPDCN11', 'BPDCN12', 'BPDCN3', 'BPDCN5', 'BPDCN9', 'BPDCN4')]
 colnames(Onco.func.Data) <- c('8','2', '16', '17', '3', '5', '30', '9', '12', '39', '29', '7', '18')
-pdf('~/Desktop/[BPDCN] Oncoprint.func.pdf', height=15, width=9)
+pdf('~/Desktop/Legend.pdf', height=15, width=9)
 a <- oncoPrint(Onco.func.Data,
                alter_fun = alter_fun, col = col.Onco,
                gap = unit(c(1.5), "mm"),
@@ -221,8 +213,10 @@ a <- oncoPrint(Onco.func.Data,
                alter_fun_is_vectorized = FALSE,
                bottom_annotation = ha,
                column_names_rot = 0,
+               column_names_centered = TRUE,
+               name = 'UPN',
                column_order = colnames(Onco.func.Data),
-               # show_column_names = TRUE,
+               show_column_names = TRUE,
                row_names_gp = gpar(fontsize=8, fontface='italic'),
                pct_gp = gpar(fontsize=8),
                row_title_gp = gpar(fontsize=10, fontface='bold'))
@@ -231,4 +225,5 @@ draw(a, heatmap_legend_side = "right",
      merge_legend = TRUE, 
      row_split = rep(c('Chromatin remodeling', 'Protein kinase pathway', 'Cell cycle', 'Methylation', 'Cell\ndifferentiation', 'RAS signaling'),
                      c(nrow(chromatin_remodeling),nrow(Protein_kinase),nrow(Cell_Cycle),nrow(Methylation), nrow(Cell_differentiation), nrow(RAS))))
+grid.text("UPN", x = 0.0899, y = 0.011, gp = gpar(fontsize = 8, col = "black"))
 dev.off()
