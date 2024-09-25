@@ -131,7 +131,10 @@ with open('BAMSampleSheet.txt', 'r') as samplesheet:
                 command = "mkdir -p Results/"
                 os.system(command)
         elif BATCH['Run.type'] == 'Varaser':
-            Code = f'/labmed/00.Code/Varaser/Varaser.ver3.py 03.Output/{Name}.bam 03.Output/{Name}.varscan2.prcd.vcf TEST'
+            # temp_code0 = f'samtools view -@ 10 03.Output/{Name}_Sorted.out.bam 22 --write-index -o 03.Output/{Name}_Sorted.out.chr22.bam'
+            # temp_code1 = f'samtools sort 03.Output/{Name}.bwa.bam -o 03.Output/{Name}_Sorted.out.bam'
+            # temp_code2 = f'samtools index 03.Output/{Name}_Sorted.out.bam'
+            Code = f'/labmed/00.Code/Varaser/Varaser.ver5.py 03.Output/{Name}_Sorted.out.bam 03.Output/{Name}.varscan2.prcd.vcf {Name} -T fastq'
             if os.path.isdir("Results"):
                 pass
             else:
@@ -151,6 +154,9 @@ with open('BAMSampleSheet.txt', 'r') as samplesheet:
                         + f"#SBATCH --nodelist={BATCH['Node']}" + '\n'
                         + f"#SBATCH -n {Cpu}" + '\n'
                         + '\n'
+                        # + temp_code0 + '\n'
+                        # + temp_code1 + '\n'
+                        # + temp_code2 + '\n'
                         + f"python3 {Code}")
         num += 1
 #-----------------------------------------------------------------------------#
