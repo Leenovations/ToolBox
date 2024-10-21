@@ -133,7 +133,7 @@ with open('BAMSampleSheet.txt', 'r') as samplesheet:
         elif BATCH['Run.type'] == 'Varaser':
             # temp_code0 = f'samtools view -@ 10 03.Output/{Name}_Sorted.out.bam 22 --write-index -o 03.Output/{Name}_Sorted.out.chr22.bam'
             # temp_code1 = f'samtools sort 03.Output/{Name}.bwa.bam -o 03.Output/{Name}_Sorted.out.bam'
-            # temp_code2 = f'samtools index 03.Output/{Name}_Sorted.out.bam'
+            temp_code2 = f'samtools index 03.Output/{Name}_Sorted.out.bam'
             Code = f'/labmed/00.Code/Varaser/Varaser.ver5.py 03.Output/{Name}_Sorted.out.bam 03.Output/{Name}.varscan2.prcd.vcf {Name} -T fastq'
             if os.path.isdir("Results"):
                 pass
@@ -149,7 +149,7 @@ with open('BAMSampleSheet.txt', 'r') as samplesheet:
                         + "#" + '\n'
                         + f"#SBATCH -J {BATCH['Run.type']}.{Name}" + '\n'
                         + f"#SBATCH -o Log.%j.out" + '\n'
-                        + f"#SBATCH -e Error.%j.out" + '\n'
+                        # + f"#SBATCH -e Error.%j.out" + '\n'
                         + f"#SBATCH --time=UNLIMITED" + '\n'
                         + f"#SBATCH --nodelist={BATCH['Node']}" + '\n'
                         + f"#SBATCH -n {Cpu}" + '\n'
