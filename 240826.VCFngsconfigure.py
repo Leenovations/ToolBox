@@ -165,7 +165,7 @@ with open('VCFSampleSheet.txt', 'r') as samplesheet:
                         + f"#SBATCH --nodelist={BATCH['Node']}" + '\n'
                         + f"#SBATCH -n {Cpu}" + '\n'
                         + '\n'
-                        + f"python3 {Code}")
+                        + f"python3 {Code} VCF")
         num += 1
 #-----------------------------------------------------------------------------#
 with open('Total.Run.VCF.sh', 'w') as note:
