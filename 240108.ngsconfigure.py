@@ -84,42 +84,42 @@ elif BATCH['Node'] != 'node04':
                 CPU[idx] += 2
 #-----------------------------------------------------------------------------#        
 if BATCH['Run.type'] == 'WGS':
-    Code = '/labmed/00.Code/Pipeline/WGS.py'
+    Code = '/labmed/00.Code/Pipeline/WGS.py FASTQ'
     if os.path.isdir("Results"):
         pass
     else:
         command = "mkdir -p Results/"
         os.system(command)
 elif BATCH['Run.type'] == 'WES':
-    Code = '/labmed/00.Code/Pipeline/WES.py'
+    Code = '/labmed/00.Code/Pipeline/WES.py FASTQ'
     if os.path.isdir("Results"):
         pass
     else:
         command = "mkdir -p Results/"
         os.system(command)
 elif BATCH['Run.type'] == 'TARGET':
-    Code = '/labmed/00.Code/Pipeline/TARGET.py'
+    Code = '/labmed/00.Code/Pipeline/TARGET.py FASTQ'
     if os.path.isdir("Results"):
         pass
     else:
         command = "mkdir -p Results/"
         os.system(command)
 elif BATCH['Run.type'] == 'WGBS':
-    Code = '/labmed/00.Code/Pipeline/WGBS.py'
+    Code = '/labmed/00.Code/Pipeline/WGBS.py FASTQ'
     if os.path.isdir("Results"):
         pass
     else:
         command = "mkdir -p Results/"
         os.system(command)
 elif BATCH['Run.type'] == 'RNA':
-    Code = '/labmed/00.Code/Pipeline/RNASeq.py'
+    Code = '/labmed/00.Code/Pipeline/RNASeq.py FASTQ'
     if os.path.isdir("Genecount"):
         pass
     else:
         command = "mkdir -p Genecount/"
         os.system(command)
 elif BATCH['Run.type'] == 'Gleevec':
-    Code = '/labmed/00.Code/Pipeline/Imatinib.py'
+    Code = '/labmed/00.Code/Pipeline/Imatinib.py FASTQ'
     if os.path.isdir("Results"):
         pass
     else:

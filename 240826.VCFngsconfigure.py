@@ -96,56 +96,56 @@ with open('VCFSampleSheet.txt', 'r') as samplesheet:
         BATCH['Sample.Name'] = Sample_Name
         BATCH['Sample.Dir'] = Sample_Dir
         if BATCH['Run.type'] == 'WGS':
-            Code = '/labmed/00.Code/Pipeline/WGS.py'
+            Code = '/labmed/00.Code/Pipeline/WGS.py VCF'
             if os.path.isdir("Results"):
                 pass
             else:
                 command = "mkdir -p Results/"
                 os.system(command)
         elif BATCH['Run.type'] == 'WES':
-            Code = '/labmed/00.Code/Pipeline/WES.py'
+            Code = '/labmed/00.Code/Pipeline/WES.py VCF'
             if os.path.isdir("Results"):
                 pass
             else:
                 command = "mkdir -p Results/"
                 os.system(command)
         elif BATCH['Run.type'] == 'TARGET':
-            Code = '/labmed/00.Code/Pipeline/TARGET.py'
+            Code = '/labmed/00.Code/Pipeline/TARGET.py VCF'
             if os.path.isdir("Results"):
                 pass
             else:
                 command = "mkdir -p Results/"
                 os.system(command)
         elif BATCH['Run.type'] == 'WGBS':
-            Code = '/labmed/00.Code/Pipeline/WGBS.py'
+            Code = '/labmed/00.Code/Pipeline/WGBS.py VCF'
             if os.path.isdir("Results"):
                 pass
             else:
                 command = "mkdir -p Results/"
                 os.system(command)
         elif BATCH['Run.type'] == 'RNA':
-            Code = '/labmed/00.Code/Pipeline/RNASeq.py'
+            Code = '/labmed/00.Code/Pipeline/RNASeq.py VCF'
             if os.path.isdir("Genecount"):
                 pass
             else:
                 command = "mkdir -p Genecount/"
                 os.system(command)
         elif BATCH['Run.type'] == 'Gleevec':
-            Code = '/labmed/00.Code/Pipeline/Imatinib.py'
+            Code = '/labmed/00.Code/Pipeline/Imatinib.py VCF'
             if os.path.isdir("Results"):
                 pass
             else:
                 command = "mkdir -p Results/"
                 os.system(command)
         elif BATCH['Run.type'] == 'Annotation':
-            Code = '/labmed/00.Code/Pipeline/Annotation.py'
+            Code = '/labmed/00.Code/Pipeline/Annotation.py VCF'
             if os.path.isdir("Results"):
                 pass
             else:
                 command = "mkdir -p Results/"
                 os.system(command)
         elif BATCH['Run.type'] == 'Varaser':
-            Code = f'/labmed/00.Code/Varaser/Varaser.ver3.py 03.Output/{Name}.bam 03.Output/{Name}.varscan2.prcd.vcf TEST'
+            Code = f'/labmed/00.Code/Varaser/Varaser.ver3.py 03.Output/{Name}.bam 03.Output/{Name}.varscan2.prcd.vcf TEST VCF'
             if os.path.isdir("Results"):
                 pass
             else:
@@ -165,7 +165,7 @@ with open('VCFSampleSheet.txt', 'r') as samplesheet:
                         + f"#SBATCH --nodelist={BATCH['Node']}" + '\n'
                         + f"#SBATCH -n {Cpu}" + '\n'
                         + '\n'
-                        + f"python3 {Code} VCF")
+                        + f"python3 {Code}")
         num += 1
 #-----------------------------------------------------------------------------#
 with open('Total.Run.VCF.sh', 'w') as note:
