@@ -96,35 +96,35 @@ with open('BAMSampleSheet.txt', 'r') as samplesheet:
         BATCH['Sample.Name'] = Sample_Name
         BATCH['Sample.Dir'] = Sample_Dir
         if BATCH['Run.type'] == 'WGS':
-            Code = '/labmed/00.Code/Pipeline/WGS.py'
+            Code = '/labmed/00.Code/Pipeline/WGS.py BAM'
             if os.path.isdir("Results"):
                 pass
             else:
                 command = "mkdir -p Results/"
                 os.system(command)
         elif BATCH['Run.type'] == 'WES':
-            Code = '/labmed/00.Code/Pipeline/WES.py'
+            Code = '/labmed/00.Code/Pipeline/WES.py BAM'
             if os.path.isdir("Results"):
                 pass
             else:
                 command = "mkdir -p Results/"
                 os.system(command)
         elif BATCH['Run.type'] == 'WGBS':
-            Code = '/labmed/00.Code/Pipeline/WGBS.py'
+            Code = '/labmed/00.Code/Pipeline/WGBS.py BAM'
             if os.path.isdir("Results"):
                 pass
             else:
                 command = "mkdir -p Results/"
                 os.system(command)
         elif BATCH['Run.type'] == 'RNA':
-            Code = '/labmed/00.Code/Pipeline/RNASeq.py'
+            Code = '/labmed/00.Code/Pipeline/RNASeq.py BAM'
             if os.path.isdir("Genecount"):
                 pass
             else:
                 command = "mkdir -p Genecount/"
                 os.system(command)
         elif BATCH['Run.type'] == 'Gleevec':
-            Code = '/labmed/00.Code/Pipeline/Imatinib.py'
+            Code = '/labmed/00.Code/Pipeline/Imatinib.py BAM'
             if os.path.isdir("Results"):
                 pass
             else:
@@ -156,7 +156,7 @@ with open('BAMSampleSheet.txt', 'r') as samplesheet:
                         # + temp_code0 + '\n'
                         # + temp_code1 + '\n'
                         # + temp_code2 + '\n'
-                        + f"python3 {Code} BAM")
+                        + f"python3 {Code}")
         num += 1
 #-----------------------------------------------------------------------------#
 with open('Total.Run.BAM.sh', 'w') as note:
