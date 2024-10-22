@@ -123,6 +123,13 @@ with open('BAMSampleSheet.txt', 'r') as samplesheet:
             else:
                 command = "mkdir -p Genecount/"
                 os.system(command)
+        elif BATCH['Run.type'] == 'TARGET':
+            Code = '/labmed/00.Code/Pipeline/TARGET.py BAM'
+            if os.path.isdir("Genecount"):
+                pass
+            else:
+                command = "mkdir -p Genecount/"
+                os.system(command)
         elif BATCH['Run.type'] == 'Gleevec':
             Code = '/labmed/00.Code/Pipeline/Imatinib.py BAM'
             if os.path.isdir("Results"):
