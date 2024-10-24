@@ -138,9 +138,9 @@ with open('BAMSampleSheet.txt', 'r') as samplesheet:
                 command = "mkdir -p Results/"
                 os.system(command)
         elif BATCH['Run.type'] == 'Varaser':
-            # temp_code1 = f'samtools sort 03.Output/{Name}.bwa.bam -o 03.Output/{Name}_Sorted.out.bam'
-            temp_code2 = f'samtools index 03.Output/{Name}_Sorted.out.bam'
-            Code = f'/labmed/00.Code/Varaser/Varaser.ver5.py 03.Output/{Name}_Sorted.out.bam 03.Output/{Name}.varscan2.prcd.vcf {Name} -T fastq'
+            temp_code1 = f'samtools sort 03.Output/{Name}_Sorted.out.bam -o 03.Output/{Name}_Input.bam'
+            temp_code2 = f'samtools index 03.Output/{Name}_Input.bam'
+            Code = f'/labmed/00.Code/Varaser/Varaser.ver6.py 03.Output/{Name}_Input.bam 03.Output/{Name}.varscan2.prcd.parsed.vcf {Name} -T fastq'
             if os.path.isdir("Results"):
                 pass
             else:
@@ -161,8 +161,8 @@ with open('BAMSampleSheet.txt', 'r') as samplesheet:
                         + f"#SBATCH -n {Cpu}" + '\n'
                         + '\n'
                         # + temp_code0 + '\n'
-                        # + temp_code1 + '\n'
-                        # + temp_code2 + '\n'
+                        + temp_code1 + '\n'
+                        + temp_code2 + '\n'
                         + f"python3 {Code}")
         num += 1
 #-----------------------------------------------------------------------------#
