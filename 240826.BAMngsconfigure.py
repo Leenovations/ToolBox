@@ -161,8 +161,8 @@ with open('BAMSampleSheet.txt', 'r') as samplesheet:
                         + f"#SBATCH -n {Cpu}" + '\n'
                         + '\n'
                         # + temp_code0 + '\n'
-                        + temp_code1 + '\n'
-                        + temp_code2 + '\n'
+                        # + temp_code1 + '\n'
+                        # + temp_code2 + '\n'
                         + f"python3 {Code}")
         num += 1
 #-----------------------------------------------------------------------------#

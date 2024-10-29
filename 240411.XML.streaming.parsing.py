@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
-
+from lxml import etree
+#-------------------------------------------------------------------------------------------------------------------#
 def process_sections(xml_file):
     header = ['NM', 'NMsequenceAccession', 'NMsequenceVersion', 'NMchange', 'Type', 'Symbol' ,'MANESelect', 'NPsequenceAccession', 'NPsequenceVersion', 'NPchange', 'AlleleID', 'RCV', 'Class', 'Synonym', 'Disease Info', 'Strand']
     context = ET.iterparse(xml_file, events=('start', 'end'))
@@ -224,7 +225,84 @@ def process_sections(xml_file):
                         Value = Total[key].values()
                         Value = '\t'.join(Value) + '\n'
                         note1.write(Value)
+#---------------------------------------------------------------------------------------------------------------------------#
+def lmxl_parsing(xml_file):
+    tree = etree.parse(xml_file)
+    root = tree.getroot()
 
+    for variation in root.xpath("VariationArchive"):
+        variation_id = variation.attrib.get('VariationID')  # Variation ID 추출
+        variation_name = variation.attrib.get('VariationName')  # Variation Name 추출
+        gene_symbol = variation.xpath(".//Gene/@Symbol")[0] if variation.xpath(".//Gene/@Symbol") else "N/A"
+        VariationID = variation.attrib.get('Accession') + '.' + variation.attrib.get('Version')
+    #-----------------------------------------------------------------------------------------------------------------------#    
+    Species = root.findtext('.//Species')
+    #-----------------------------------------------------------------------------------------------------------------------#
+    GeneSymbol = root.find('.//Gene').get('Symbol')
+    FULLNAME = root.find('.//Gene').get('FullName')
+    HGNCID = root.find('.//Gene').get('HGNC_ID').split(':')[1]
+    Cytoband = root.findtext('.//CytogeneticLocation')
+    #-----------------------------------------------------------------------------------------------------------------------#
+    SequenceLocation = root.findall('.//Location//SequenceLocation')
+    for location in SequenceLocation:
+        Assembly = location.get('Assembly')    
+        Accession = location.get('Accession')
+        Chr = location.get('Chr')
+        VCF_post = location.get('positionVCF')
+        Ref = location.get('referenceAlleleVCF')
+        Alt = location.get('alternateAlleleVCF')
+        strand = location.get('Strand')
+        print(Ref, Alt, strand)
+    #-----------------------------------------------------------------------------------------------------------------------#
+    Omim = root.findtext('.//GeneList//OMIM')
+    #-----------------------------------------------------------------------------------------------------------------------#
+    HGVS_list = root.findall('.//HGVS')
+    for hgvs in HGVS_list:
+        Assembly = hgvs.get('Assembly')
+        Type = hgvs.get('Type')
+        
+        if Assembly == "GRCh37":
+            Sub = hgvs.findall('.//NucleotideExpression')
+            for sub in Sub:
+                sequenceAccessionVersion = sub.get('sequenceAccessionVersion')
+                sequenceAccession = sub.get('sequenceAccession')
+                change = sub.get('change')
+
+        elif Assembly == "GRCh38":
+            Sub = hgvs.findall('.//NucleotideExpression')
+            for sub in Sub:
+                sequenceAccessionVersion = sub.get('sequenceAccessionVersion')
+                sequenceAccession = sub.get('sequenceAccession')
+                change = sub.get('change')
+        else:
+            Sub = hgvs.findall('.//NucleotideExpression')
+            for sub in Sub:
+                sequenceAccessionVersion = sub.get('sequenceAccessionVersion')
+                sequenceAccession = sub.get('sequenceAccession')
+                change = sub.get('change')
+    #-----------------------------------------------------------------------------------------------------------------------#
+    XRefList = root.findall('.//XRefList')
+    for xref in XRefList:
+        for Sub in xref:
+            Type = Sub.get('Type')
+            DB = Sub.get('DB')
+            ID = Sub.get('ID')
+
+            if Type:
+                pass
+    #-----------------------------------------------------------------------------------------------------------------------#
+    RCV = root.find('.//RCVAccession')
+    title = RCV.get('Title')
+    accession = RCV.get('Accession') + '.' + RCV.get('Version')
+    ClassifiedCondition = RCV.find('.//ClassifiedCondition')
+    ClassifiedConditionDB = ClassifiedCondition.get('DB')
+    ClassifiedConditionID = ClassifiedCondition.get('ID')
+    condition = RCV.findtext('.//ClassifiedCondition')
+    classification = RCV.findtext('.//Description')
+    #-----------------------------------------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------------------------------------------#
 if __name__ == "__main__":
-    xml_file = "/media/src/Classification/ClinVarVCVRelease_00-latest_weekly.xml"
-    process_sections(xml_file)
+    # xml_file = "/media/src/Classification/ClinVarVCVRelease_00-latest_weekly.xml"
+    xml_file = "/media/src/Classification/test.xml"
+    # process_sections(xml_file)
+    lmxl_parsing(xml_file)
