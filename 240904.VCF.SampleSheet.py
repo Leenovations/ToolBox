@@ -2,7 +2,8 @@
 import sys
 import os
 
-LIST = sys.argv[1:]
+Class = sys.argv[1]
+LIST = sys.argv[2:]
 
 with open('VCFDatalist.txt', 'w') as note2:
 	for data in LIST:

@@ -252,7 +252,6 @@ def lmxl_parsing(xml_file):
         Ref = location.get('referenceAlleleVCF')
         Alt = location.get('alternateAlleleVCF')
         strand = location.get('Strand')
-        print(Ref, Alt, strand)
     #-----------------------------------------------------------------------------------------------------------------------#
     Omim = root.findtext('.//GeneList//OMIM')
     #-----------------------------------------------------------------------------------------------------------------------#
@@ -299,6 +298,12 @@ def lmxl_parsing(xml_file):
     ClassifiedConditionID = ClassifiedCondition.get('ID')
     condition = RCV.findtext('.//ClassifiedCondition')
     classification = RCV.findtext('.//Description')
+    #-----------------------------------------------------------------------------------------------------------------------#
+    Origin = root.findall('.//VariationArchive')
+    for origin in Origin:
+        A = origin.findall('.//Origin')
+        for i in A:
+            print(i.findtext('.//Origin'))
     #-----------------------------------------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------------------------------------------#
 if __name__ == "__main__":
