@@ -12,6 +12,19 @@ args = parser.parse_args()
 command = 'pwd'
 Dir = os.getcwd()
 #-----------------------------------------------------------------------------#
+if os.path.isfile('SampleSheet.control.txt'):
+    Matched = {}
+    with open('SampleSheet.case.txt', 'r') as case, open('SampleSheet.control.txt') as control:
+        for a, b in zip(case, control):
+            case_line = a.strip()
+            case_splitted = case_line.split('\t')[0]
+            
+            control_line = b.strip()
+            control_splitted = control_line.split('\t')[0]
+
+            Matched[case_splitted] = ['case', Dir + '/' + control_splitted]
+            Matched[control_splitted] = ['control', Dir + '/' + case_splitted]
+#-----------------------------------------------------------------------------#
 with open('VCFSampleSheet.txt', 'r') as samplesheet:
     Sample_Count = 0
     Sample_Dir = []
@@ -83,6 +96,62 @@ elif BATCH['Node'] != 'node04':
             for idx in Sample_Size_Idx[:How_many]:
                 CPU[idx] += 2
 #-----------------------------------------------------------------------------#        
+if BATCH['Run.type'] == 'WGS':
+    Code = '/labmed/00.Code/Pipeline/WGS.py VCF'
+    if os.path.isdir("Results"):
+        pass
+    else:
+        command = "mkdir -p Results/"
+        os.system(command)
+elif BATCH['Run.type'] == 'WES':
+    Code = '/labmed/00.Code/Pipeline/WES.py VCF'
+    if os.path.isdir("Results"):
+        pass
+    else:
+        command = "mkdir -p Results/"
+        os.system(command)
+elif BATCH['Run.type'] == 'TARGET':
+    Code = '/labmed/00.Code/Pipeline/TARGET.py VCF'
+    if os.path.isdir("Results"):
+        pass
+    else:
+        command = "mkdir -p Results/"
+        os.system(command)
+elif BATCH['Run.type'] == 'WGBS':
+    Code = '/labmed/00.Code/Pipeline/WGBS.py VCF'
+    if os.path.isdir("Results"):
+        pass
+    else:
+        command = "mkdir -p Results/"
+        os.system(command)
+elif BATCH['Run.type'] == 'RNA':
+    Code = '/labmed/00.Code/Pipeline/RNASeq.py VCF'
+    if os.path.isdir("Genecount"):
+        pass
+    else:
+        command = "mkdir -p Genecount/"
+        os.system(command)
+elif BATCH['Run.type'] == 'Gleevec':
+    Code = '/labmed/00.Code/Pipeline/Imatinib.py VCF'
+    if os.path.isdir("Results"):
+        pass
+    else:
+        command = "mkdir -p Results/"
+        os.system(command)
+elif BATCH['Run.type'] == 'Annotation':
+    Code = '/labmed/00.Code/Pipeline/Annotation.py VCF'
+    if os.path.isdir("Results"):
+        pass
+    else:
+        command = "mkdir -p Results/"
+        os.system(command)
+elif BATCH['Run.type'] == 'Varaser':
+    Code = f'/labmed/00.Code/Varaser/Varaser.ver6.py'
+    if os.path.isdir("Results"):
+        pass
+    else:
+        command = "mkdir -p Results/"
+        os.system(command)
 #-----------------------------------------------------------------------------#
 with open('VCFSampleSheet.txt', 'r') as samplesheet:
     num = 0
@@ -95,72 +164,24 @@ with open('VCFSampleSheet.txt', 'r') as samplesheet:
         BATCH['SampleCount'] = Sample_Count
         BATCH['Sample.Name'] = Sample_Name
         BATCH['Sample.Dir'] = Sample_Dir
-        if BATCH['Run.type'] == 'WGS':
-            Code = '/labmed/00.Code/Pipeline/WGS.py VCF'
-            if os.path.isdir("Results"):
-                pass
-            else:
-                command = "mkdir -p Results/"
-                os.system(command)
-        elif BATCH['Run.type'] == 'WES':
-            Code = '/labmed/00.Code/Pipeline/WES.py VCF'
-            if os.path.isdir("Results"):
-                pass
-            else:
-                command = "mkdir -p Results/"
-                os.system(command)
-        elif BATCH['Run.type'] == 'TARGET':
-            Code = '/labmed/00.Code/Pipeline/TARGET.py VCF'
-            if os.path.isdir("Results"):
-                pass
-            else:
-                command = "mkdir -p Results/"
-                os.system(command)
-        elif BATCH['Run.type'] == 'WGBS':
-            Code = '/labmed/00.Code/Pipeline/WGBS.py VCF'
-            if os.path.isdir("Results"):
-                pass
-            else:
-                command = "mkdir -p Results/"
-                os.system(command)
-        elif BATCH['Run.type'] == 'RNA':
-            Code = '/labmed/00.Code/Pipeline/RNASeq.py VCF'
-            if os.path.isdir("Genecount"):
-                pass
-            else:
-                command = "mkdir -p Genecount/"
-                os.system(command)
-        elif BATCH['Run.type'] == 'Gleevec':
-            Code = '/labmed/00.Code/Pipeline/Imatinib.py VCF'
-            if os.path.isdir("Results"):
-                pass
-            else:
-                command = "mkdir -p Results/"
-                os.system(command)
-        elif BATCH['Run.type'] == 'Annotation':
-            Code = '/labmed/00.Code/Pipeline/Annotation.py VCF'
-            if os.path.isdir("Results"):
-                pass
-            else:
-                command = "mkdir -p Results/"
-                os.system(command)
-        elif BATCH['Run.type'] == 'Varaser':
-            Code = f'/labmed/00.Code/Varaser/Varaser.ver3.py 03.Output/{Name}.bam 03.Output/{Name}.varscan2.prcd.vcf TEST VCF'
-            if os.path.isdir("Results"):
-                pass
-            else:
-                command = "mkdir -p Results/"
-                os.system(command)
-        with open(f'{Name}/{Name}.batch.config', 'w') as note:
-            for Key in BATCH.keys():
-                note.write(Key + '=' + str(BATCH[Key]) + '\n')
+        if os.path.isfile('SampleSheet.control.txt'):
+            BATCH['Class'] = Matched[Name][0]
+            BATCH['Matched.Sample.Name'] = Matched[Name][1].split('/')[-1]
+            BATCH['Matched.Sample.dir'] = Matched[Name][1]
+            with open(f'{Name}/{Name}.batch.config', 'w') as note:
+                for Key in BATCH.keys():
+                    note.write(Key + '=' + str(BATCH[Key]) + '\n')
+        else:
+            with open(f'{Name}/{Name}.batch.config', 'w') as note:
+                for Key in BATCH.keys():
+                    note.write(Key + '=' + str(BATCH[Key]) + '\n')
 
         with open(f'{Name}/VCFjob.sh', 'w') as note:
             note.write("#!/bin/bash" + '\n'
                         + "#" + '\n'
                         + f"#SBATCH -J {BATCH['Run.type']}.{Name}" + '\n'
                         + f"#SBATCH -o Log.%j.out" + '\n'
-                        + f"#SBATCH -e Error.%j.out" + '\n'
+                        # + f"#SBATCH -e Error.%j.ut" + '\n'
                         + f"#SBATCH --time=UNLIMITED" + '\n'
                         + f"#SBATCH --nodelist={BATCH['Node']}" + '\n'
                         + f"#SBATCH -n {Cpu}" + '\n'

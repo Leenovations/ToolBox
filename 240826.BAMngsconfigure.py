@@ -12,6 +12,19 @@ args = parser.parse_args()
 command = 'pwd'
 Dir = os.getcwd()
 #-----------------------------------------------------------------------------#
+if os.path.isfile('SampleSheet.control.txt'):
+    Matched = {}
+    with open('SampleSheet.case.txt', 'r') as case, open('SampleSheet.control.txt') as control:
+        for a, b in zip(case, control):
+            case_line = a.strip()
+            case_splitted = case_line.split('\t')[0]
+            
+            control_line = b.strip()
+            control_splitted = control_line.split('\t')[0]
+
+            Matched[case_splitted] = ['case', Dir + '/' + control_splitted]
+            Matched[control_splitted] = ['control', Dir + '/' + case_splitted]
+#-----------------------------------------------------------------------------#
 with open('BAMSampleSheet.txt', 'r') as samplesheet:
     Sample_Count = 0
     Sample_Dir = []
@@ -82,7 +95,56 @@ elif BATCH['Node'] != 'node04':
             How_many = int(Rest_CPU / 2) #분배를 2씩 해주는 경우 -> 용량에 따라 나누어야함
             for idx in Sample_Size_Idx[:How_many]:
                 CPU[idx] += 2
-#-----------------------------------------------------------------------------#        
+#-----------------------------------------------------------------------------#
+if BATCH['Run.type'] == 'WGS':
+    Code = '/labmed/00.Code/Pipeline/WGS.py BAM'
+    if os.path.isdir("Results"):
+        pass
+    else:
+        command = "mkdir -p Results/"
+        os.system(command)
+elif BATCH['Run.type'] == 'WES':
+    Code = '/labmed/00.Code/Pipeline/WES.py BAM'
+    if os.path.isdir("Results"):
+        pass
+    else:
+        command = "mkdir -p Results/"
+        os.system(command)
+elif BATCH['Run.type'] == 'WGBS':
+    Code = '/labmed/00.Code/Pipeline/WGBS.py BAM'
+    if os.path.isdir("Results"):
+        pass
+    else:
+        command = "mkdir -p Results/"
+        os.system(command)
+elif BATCH['Run.type'] == 'RNA':
+    Code = '/labmed/00.Code/Pipeline/RNASeq.py BAM'
+    if os.path.isdir("Genecount"):
+        pass
+    else:
+        command = "mkdir -p Genecount/"
+        os.system(command)
+elif BATCH['Run.type'] == 'TARGET':
+    Code = '/labmed/00.Code/Pipeline/TARGET.py BAM'
+    if os.path.isdir("Genecount"):
+        pass
+    else:
+        command = "mkdir -p Genecount/"
+        os.system(command)
+elif BATCH['Run.type'] == 'Gleevec':
+    Code = '/labmed/00.Code/Pipeline/Imatinib.py BAM'
+    if os.path.isdir("Results"):
+        pass
+    else:
+        command = "mkdir -p Results/"
+        os.system(command)
+elif BATCH['Run.type'] == 'Varaser':
+    Code = f'/labmed/00.Code/Varaser/Varaser.ver6.py'
+    if os.path.isdir("Results"):
+        pass
+    else:
+        command = "mkdir -p Results/"
+        os.system(command)
 #-----------------------------------------------------------------------------#
 with open('BAMSampleSheet.txt', 'r') as samplesheet:
     num = 0
@@ -95,60 +157,17 @@ with open('BAMSampleSheet.txt', 'r') as samplesheet:
         BATCH['SampleCount'] = Sample_Count
         BATCH['Sample.Name'] = Sample_Name
         BATCH['Sample.Dir'] = Sample_Dir
-        if BATCH['Run.type'] == 'WGS':
-            Code = '/labmed/00.Code/Pipeline/WGS.py BAM'
-            if os.path.isdir("Results"):
-                pass
-            else:
-                command = "mkdir -p Results/"
-                os.system(command)
-        elif BATCH['Run.type'] == 'WES':
-            Code = '/labmed/00.Code/Pipeline/WES.py BAM'
-            if os.path.isdir("Results"):
-                pass
-            else:
-                command = "mkdir -p Results/"
-                os.system(command)
-        elif BATCH['Run.type'] == 'WGBS':
-            Code = '/labmed/00.Code/Pipeline/WGBS.py BAM'
-            if os.path.isdir("Results"):
-                pass
-            else:
-                command = "mkdir -p Results/"
-                os.system(command)
-        elif BATCH['Run.type'] == 'RNA':
-            Code = '/labmed/00.Code/Pipeline/RNASeq.py BAM'
-            if os.path.isdir("Genecount"):
-                pass
-            else:
-                command = "mkdir -p Genecount/"
-                os.system(command)
-        elif BATCH['Run.type'] == 'TARGET':
-            Code = '/labmed/00.Code/Pipeline/TARGET.py BAM'
-            if os.path.isdir("Genecount"):
-                pass
-            else:
-                command = "mkdir -p Genecount/"
-                os.system(command)
-        elif BATCH['Run.type'] == 'Gleevec':
-            Code = '/labmed/00.Code/Pipeline/Imatinib.py BAM'
-            if os.path.isdir("Results"):
-                pass
-            else:
-                command = "mkdir -p Results/"
-                os.system(command)
-        elif BATCH['Run.type'] == 'Varaser':
-            temp_code1 = f'samtools sort 03.Output/{Name}_Sorted.out.bam -o 03.Output/{Name}_Input.bam'
-            temp_code2 = f'samtools index 03.Output/{Name}_Input.bam'
-            Code = f'/labmed/00.Code/Varaser/Varaser.ver6.py 03.Output/{Name}_Input.bam 03.Output/{Name}.varscan2.prcd.parsed.vcf {Name} -T fastq'
-            if os.path.isdir("Results"):
-                pass
-            else:
-                command = "mkdir -p Results/"
-                os.system(command)
-        with open(f'{Name}/{Name}.batch.config', 'w') as note:
-            for Key in BATCH.keys():
-                note.write(Key + '=' + str(BATCH[Key]) + '\n')
+        if os.path.isfile('SampleSheet.control.txt'):
+            BATCH['Class'] = Matched[Name][0]
+            BATCH['Matched.Sample.Name'] = Matched[Name][1].split('/')[-1]
+            BATCH['Matched.Sample.dir'] = Matched[Name][1]
+            with open(f'{Name}/{Name}.batch.config', 'w') as note:
+                for Key in BATCH.keys():
+                    note.write(Key + '=' + str(BATCH[Key]) + '\n')
+        else:
+            with open(f'{Name}/{Name}.batch.config', 'w') as note:
+                for Key in BATCH.keys():
+                    note.write(Key + '=' + str(BATCH[Key]) + '\n')
 
         with open(f'{Name}/BAMjob.sh', 'w') as note:
             note.write("#!/bin/bash" + '\n'
@@ -160,9 +179,6 @@ with open('BAMSampleSheet.txt', 'r') as samplesheet:
                         + f"#SBATCH --nodelist={BATCH['Node']}" + '\n'
                         + f"#SBATCH -n {Cpu}" + '\n'
                         + '\n'
-                        # + temp_code0 + '\n'
-                        # + temp_code1 + '\n'
-                        # + temp_code2 + '\n'
                         + f"python3 {Code}")
         num += 1
 #-----------------------------------------------------------------------------#
