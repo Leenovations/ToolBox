@@ -151,7 +151,7 @@ with open('SampleSheet.txt', 'r') as samplesheet:
                         + f"#SBATCH --nodelist={BATCH['Node']}" + '\n'
                         + f"#SBATCH -n {Cpu}" + '\n'
                         + '\n'
-                        + f"python3 {Code} FASTQ")
+                        + f"python3 {Code}")
         num += 1
 #-----------------------------------------------------------------------------#
 with open('Total.Run.sh', 'w') as note:

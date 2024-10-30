@@ -73,27 +73,3 @@ with open('SampleSheet.txt', 'w') as note1:
 					First = data
 					Second = data.replace('_1.fastq', '_2.fastq')
 					note2.write(Name + '\t' + First+ '\t' + Second + '\n')
-
-		elif data.split('.')[-1] == 'bam':
-			Name = data.split('/')[-1]
-			Name = Name.split('.bam')[0]
-			Bam = data
-			Bam = Bam.replace('.bam', '.bwa.bam')
-			Size = os.path.getsize(data)
-
-			command = f'mkdir -p {Name}/03.Output/'
-			os.system(command)
-
-			command = f'mv {Bam} {Name}/03.Output/'
-			os.system(command)
-			command = f'mv {Bam}.bai {Name}/03.Output/'
-			os.system(command)
-
-			note1.write(Name + '\t' + Name + '\t' + Name + '\t' + str(Size) + '\n')
-
-			with open(f'{Name}/SampleSheet.txt', 'w') as note2:
-				Name = data.split('/')[-1]
-				Name = Name.split('.bam')[0]
-				Bam = data
-
-				note2.write(Name + '\t' + Name + '\t' + Name + '\t' + str(Size) + '\n')
