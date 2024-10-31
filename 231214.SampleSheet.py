@@ -30,6 +30,8 @@ with open(f'SampleSheet.{Class}.txt', 'w') as note1:
 				First = data
 				Second = data.replace('_R1', '_R2')
 				note1.write(Name + '\t' + First+ '\t' + Second + '\t' + str(Size) + '\n')
+				with open(f'{Name}/SampleSheet.txt', 'w') as note2:
+					note2.write(Name + '\t' + First+ '\t' + Second + '\t' + str(Size) + '\n')
 
 			elif '_1.fastq.gz' in data:
 				Name = data.split('/')[-1]
@@ -42,6 +44,8 @@ with open(f'SampleSheet.{Class}.txt', 'w') as note1:
 				First = data
 				Second = data.replace('_1.fastq.gz', '_2.fastq.gz')
 				note1.write(Name + '\t' + First+ '\t' + Second + '\t' + str(Size) + '\n')
+				with open(f'{Name}/SampleSheet.txt', 'w') as note2:
+					note2.write(Name + '\t' + First+ '\t' + Second + '\t' + str(Size) + '\n')
 
 			elif '_1.fastq' in data:
 				Name = data.split('/')[-1]
@@ -54,6 +58,6 @@ with open(f'SampleSheet.{Class}.txt', 'w') as note1:
 				First = data
 				Second = data.replace('_1.fastq', '_2.fastq')
 				note1.write(Name + '\t' + First+ '\t' + Second + '\t' + str(Size) + '\n')
+				with open(f'{Name}/SampleSheet.txt', 'w') as note2:
+					note2.write(Name + '\t' + First+ '\t' + Second + '\t' + str(Size) + '\n')
 #-----------------------------------------------------------------------------------------#
-command = f'cat SampleSheet.{Class}.txt >> SampleSheet.txt'
-os.system(command)

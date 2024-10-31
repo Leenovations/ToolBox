@@ -12,6 +12,9 @@ args = parser.parse_args()
 command = 'pwd'
 Dir = os.getcwd()
 #-----------------------------------------------------------------------------#
+command = f'cat SampleSheet*.txt > SampleSheet.txt'
+os.system(command)
+#-----------------------------------------------------------------------------#
 if os.path.isfile('SampleSheet.control.txt'):
     Matched = {}
     with open('SampleSheet.case.txt', 'r') as case, open('SampleSheet.control.txt') as control:
